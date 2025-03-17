@@ -1,0 +1,485 @@
+import tkinter
+
+# Kapitel 1: Der Pfad der Mutigen
+
+# Waffenkammer : Nach dem Gespräch mit dem König
+def waffenkammer():
+    print("\nDu trittst in die Waffenkammer ein.")
+    print("In der Waffenkammer befinden sich verschiedene Waffen und Rüstungen.")
+    print("Welche Ausrüstung möchtest du wählen?")
+
+    # Waffen und Rüstungen zur Auswahl
+    waehlen = input("1. Dolch\n2. Schwert\n3. Rüstung des Kriegers\n4. Leichte Rüstung\nWähle (1-4): ")
+
+    if waehlen == '1':
+        print("\nDu hast einen Dolch gewählt. Du bist schnell und beweglich.")
+    elif waehlen == '2':
+        print("\nDu hast ein Schwert gewählt. Du bist gut bewaffnet für den Kampf.")
+    elif waehlen == '3':
+        print("\nDu hast die Rüstung des Kriegers gewählt. Du bist gut geschützt, aber langsamer.")
+    elif waehlen == '4':
+        print("\nDu hast eine leichte Rüstung gewählt. Du bist schnell, aber weniger geschützt.")
+    else:
+        print("\nUngültige Wahl. Du musst eine der Optionen wählen.")
+        waffenkammer()
+    
+    print("Nun bist du bereit, um dein Abenteuer zu bestreiten. Als nächstes solltest du dich im Dorf umhören.\nDu kehrst ins Dort zurück.")
+    dorfübersicht()
+
+gesammelte_infos = [] # Speichert, welche Quellen bereits gefunden wurden
+infos_gesammelt = 0 # Startwert
+fortschritt_wirt = 0 # 0 = Erstes Gespräch, 1 = Wirt sagt, komm später wieder, 2 = Wirt verrät tiefere Infos
+fortschritt_fischer = 0  # 0 = Noch nicht getroffen, 1 = Auftrag erhalten, 2 = Aufgabe erledigt
+truhe = {1: {"name": "Heilkräuter", "anzahl": 3, "beschreibung": "Kräuter, um Wunden zu heilen."}} # Startinhalt
+inventar = {1: {"name": "Goldmünzen", "anzahl": 10, "beschreibung": "Hiesige Währung"}} # Startinventar
+
+# Infos hinzufügen
+def info_hinzufügen(info):
+    global gesammelte_infos, infos_gesammelt
+    if info not in gesammelte_infos:
+        gesammelte_infos.append(info)
+        infos_gesammelt += 1
+        print("\nDu hast eine neue Information gesammelt!")
+    else: 
+        print("\nDiese Information hattest du bereits.")
+
+# Truhe öffnen
+def truhe_öffnen():  # HIER GEHT ES WEITER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    global inventar
+    global truhe
+
+    if not truhe:
+        print("Die Truhe ist leer.")
+        return
+
+    print("\nDu öffnest die Truhe und findest folgende Gegenstände:")
+    for key, item in truhe.items():
+        print(f"{key}. {item['name']} - {item['beschreibung']} (Anzahl: {item['anzahl']})")
+    
+        try:
+            wahl = int(input("\nWelchen Gegenstand möchtest du nehmen? (Bitte die Zahl angeben.)"))
+            if wahl_truhe == 0:
+                print("Du schließt die Truhe.")
+                break
+            elif
+
+
+# Schänke
+def schänke():
+    global fortschritt_wirt  # Wir greifen auf die Variable zu
+
+    if fortschritt_wirt == 0:
+        print("\nDu betrittst die Schänke. Der Raum ist erfüllt von Stimmengewirr und dem Geruch nach gebratenem Fleisch.")
+        print("Am Tresen steht der Wirt, ein paar Dorfbewohner sitzen an den Tischen und unterhalten sich.")
+    elif fortschritt_wirt == 1: 
+        print("\nDie Schänke ist noch gut besucht, aber du weißt, dass du später wiederkommen sollst.")
+    else:
+        print("\nDie Schänke ist nun leerer als zuvor. Der Wirt lehnt sich entspannt an den Tresen und beobachtet dich neugierig.")
+
+    while True:
+        print("\nWas möchtest du tun?")
+        if fortschritt_wirt == 0:  # Falls der Spieler das erste Mal hier ist, zeigen wir das Standard-Menü
+            print("1. Mit dem Wirt sprechen")
+            print("2. Dich unauffällig umhören")
+            print("3. Zurück ins Dorf")
+        elif fortschritt_wirt == 1:
+            print("1. Warten, bis die Schänke leer ist")
+            print("2. Die Zeit nutzen und woanders nachforschen")
+        else:  # Falls er bereits hier war, hat er jetzt eine neue Option
+            print("1. Mit dem Wirt über das Geheimnis sprechen")
+            print("2. Zurück ins Dorf")
+
+        wahl = input("> ")
+
+        if wahl == "1":
+            if fortschritt_wirt == 0:
+                gespräch_mit_wirt()
+            elif fortschritt_wirt == 1:
+                print("\nDu bestellst dir einen Krug Wein und wartest, bis die letzten Gäste gegangen sind...")
+                print("Die Schänke wird leerer, und endlich kann der Wirt offen mit dir sprechen.")
+                fortschritt_wirt = 2  # Jetzt hat der Spieler die richtige Phase erreicht
+                offenbarung_wirt()
+            else: 
+                offenbarung_wirt()
+        elif wahl == "2":
+            if fortschritt_wirt == 0:
+                umhören()
+            elif fortschritt_wirt == 1:
+                print("Du nutzt die Zeit, um dich im Dorf umzusehen.")
+                dorfübersicht()
+            else: 
+                dorfübersicht()
+        elif wahl == "3" and fortschritt_wirt == 0:
+            dorfübersicht()  
+            break
+        else:
+            print("\nUngültige Eingabe, versuche es erneut.")  # Kein erneuter Funktionsaufruf nötig
+
+# Gespräch mit Wirt
+def gespräch_mit_wirt():
+    global fortschritt_wirt
+
+    print("\nDer Wirt wischt mit einem Tuch über den Tresen und sieht dich neugierig an...")
+    print("Wirt: 'Hast du Hunger, Grünschnabel?'")
+    print("\nWas möchtest du antworten?")
+    print("1. 'Ich bin der Auserwählte! Habt gefälligst mehr Respekt!'")
+    print("2. 'Nur einen Krug Wein. Ich bin wegen der Gerüchte hier. \nHabt Ihr hier auch von dem Dorf gehört, von dem alle sprechen?'")
+    print("3. Gespräch beenden")
+
+    wahl_wirt = input("> ")
+
+    if wahl_wirt == "1":
+        print("\nDer Wirt lacht schallend und klopft dir auf die Schulter.")
+        print("Wirt: 'Haha! Ein Spaßvogel! Hier, trink was, das hebt die Laune.'")
+        schänke()
+    elif wahl_wirt == "2":
+        print("\nDer Wirt lehnt sich zu dir herüber und spricht mit gedämpfter Stimme.")
+        print("Wirt: 'Aye, ich habe davon gehört... Aber sei vorsichtig, nicht jeder mag es, wenn man zu viel fragt.'")
+        print("\nWas willst du tun?")
+        print("1. 'Ich will mehr wissen! Erzählt mir alles.'")
+        print("2. 'Danke für den Tipp. Ich frage woanders nach.'")
+
+        wahl_gerüchte = input("> ")
+
+        if wahl_gerüchte == "1":
+            print("\nDer Wirt sieht sich um und flüstert: 'Dann komm später wieder, wenn weniger Leute hier sind.'")
+            fortschritt_wirt = 1  # Fortschritt erhöhen!
+        elif wahl_gerüchte == "2":
+            print("\nDu verlässt die Theke und überlegst, wo du sonst Informationen bekommen kannst.")
+        else:
+            print("\nDer Wirt runzelt die Stirn. 'Was redest du da? Ich verstehe dich nicht.'")
+        
+        schänke()
+
+    elif wahl_wirt == "3":
+        print("\nDu verlässt den Tresen und suchst dir einen ruhigen Platz.")
+        schänke()
+    else:
+        print("\nDer Wirt runzelt die Stirn. 'Was redest du da? Ich verstehe dich nicht.'")
+        schänke()
+
+# Die Infos vom Wirt nachdem die Schänke geschlossen ist
+def offenbarung_wirt():
+    global fortschritt_wirt
+
+    print("\nWirt: 'Also gut Grünschnabel. Du willst also etwas über die Gerüchte hören, die hier im Dorf ihre Runde machen.'")
+    print("'Es begann vor etwa drei Monden, als die Sonne immer stärker und die Hitze immer unerträglicher wurde.'\nEr verzog in leidiger Erinnerung das Gesicht.")
+    print("'Der kleine Bach, der neben dem Dorf herdümpelt, versiegte. Es war einfach zu heiß. Die Ernten drohten zu vertrocknen.'")
+    print("'Doch keine sieben Tage später änderte sich alles von heute auf morgen. Die Menschen gruben nach Wasser,\nweiß der Teufel, woher sie wussten, wo sie graben mussten, und stießen auf eine unterirdische Quelle.'")
+    print("'Das allein hatte schon Aufsehen erregt, doch dann wurde das Vieh krank. Die Tiere siechten vor sich hin und es schien,\nals seien sie alle verloren.'")
+    print("'Doch auch diese Katastophe konnten die Dorfbewohner abwenden. Einer der Männer wurde ausgesandt, um ein bestimmtes Kraut zu finden.'")
+    print("'Niemand hatte je davon gehört. Die Krankheit der Tiere galt bisher als unheilbar. Drei Tage später kehrte der Mann zurück und alle Tiere genesen.'")
+    print("'Wenn du mich fragst, Grünschnabel, geht da etwas nicht mit rechten Dingen zu. Es gibt noch weitere Gerüchte.\nAber das ist das, was ich dir sagen kann.")
+    info_hinzufügen("wirt")
+
+    print("Der Wirt blickt dich abwartend an. Was möchtest du tun?")
+    print("1. Du blickst ihm tief in die Augen und antwortest: 'Das klingt nach dem Geschätz von alten Waschweibern.'")
+    print("2. Du nickst nachdenklich und sagst: 'Habt Dank, Wirt. Kennt ihr vielleicht den Namen des Dorfes?'")
+    print("3. Gespräch beenden")
+
+    wahl_wirt = input("> ")
+
+    if wahl_wirt == "1":
+        print("\nDer Wirt lacht schallend und klopft dir auf die Schulter.")
+        print("Wirt: 'Haha! Ja, das habe ich auch gedacht. Die Leute reden viel wenn der Tag lang ist. Hab eine gute Nacht, Grünschnabel.'")
+        dorfübersicht()
+    elif wahl_wirt == "2":
+        print("\nWirt: 'Ich kann dir nur die Gerüchte erzählen, die ich hier so zu Ohren bekomme.\n Aber es gibt da einen alten Fischer, der war schonmal dort.\nSein Name ist Thalin und er sitzt für gewöhnlich am Weiler. Er kann dir mehr sagen.'")
+        print("Mehr ist aus dem Wirt wohl nicht heraus zu bekommen. Du kehrst also ins Dorf zurück.")
+        fortschritt_wirt = 3 # Jetzt kann der Spieler den Fischer am Weiler finden
+        dorfübersicht()
+    elif wahl_wirt == "3":
+        print("\nDu verabschiedest dich vom Wirt und verlässt die Schänke.")
+        dorfübersicht()
+    else:
+        print("\nDer Wirt runzelt die Stirn. 'Was redest du da? Ich verstehe dich nicht.'")
+        schänke()
+
+# Umhören
+def umhören():
+    print("\nDu setzt dich unauffällig an einen Tisch und lauschst den Gesprächen der Dorfbewohner.")
+    print("Sie reden über die schlechten Ernten und das geheimnisvolle Dorf in den Bergen.")
+    print("Einer erwähnt eine seltsame Feder, die in der Nähe gesichtet wurde...")
+    info_hinzufügen("umhöhren") 
+    schänke()
+
+def schloss(): # HIER FEHLT NOCH ALLES!!!
+    print("Hier fehlt noch alles.")
+
+def weiler():
+    global fortschritt_wirt
+
+    print("\nDu erreichst den Dorfweiler. Eine leichte Brise kräuselt die Wasseroberfläche des kleinen Sees.")
+    
+    if fortschritt_wirt < 3:
+        print("Es ist ruhig hier, aber nichts scheint ungewöhnlich. Vielleicht solltest du später wiederkommen.")
+
+    else:
+        print("Ein alter Mann sitzt am Steg und starrt ins Wasser. Er wirkt, als könnte er eine Geschichte erzählen.")
+    
+    print("\nWas möchtest du tun?")
+    print("1. Zurück ins Dorf")
+    
+    if fortschritt_wirt >= 3:
+        print("2. Mit dem alten Mann sprechen")
+
+    wahl = input("> ")
+
+    if wahl == "1":
+        dorfübersicht()
+    elif wahl == "2" and fortschritt_wirt >= 3:
+        fischer()
+    else:
+        print("\nUngültige Eingabe. Versuche es erneut.")
+        weiler()
+
+def fischer():
+    global fortschritt_fischer
+
+    if fortschritt_fischer == 0:
+        print("\nEin alter Mann sitzt am Steg und starrt ins Wasser. Er sieht aus, als hätte er viele Geschichten zu erzählen.")
+        print("1. Mit ihm sprechen")
+        print("2. Weitergehen")
+
+        wahl = input("> ")
+
+        if wahl == "1":
+            print("\nDer alte Mann sieht dich an und lächelt verschmitzt.")
+            print("'Sie sagen, ich sei ein verrückter alter Narr. Aber ich weiß Dinge, die du nicht weißt.'")
+            print("1. 'Erzählt mir, was ihr wisst.'")
+            print("2. 'Ich habe keine Zeit für Rätsel.'")
+
+            wahl_fischer = input("> ")
+
+            if wahl_fischer == "1":
+                print("\nDer alte Mann seufzt. 'Ich könnte dir etwas erzählen, aber meine Pfeife ist verschwunden. Vielleicht bringst du sie mir?'")
+                fortschritt_fischer = 1
+            else:
+                print("\nDer alte Mann lacht. 'Dann geh weiter, Grünschnabel.'")
+
+        dorfübersicht()
+    
+    elif fortschritt_fischer == 1:
+        print("\nDer alte Mann wartet auf seine Pfeife.")
+        dorfübersicht()
+
+    elif fortschritt_fischer == 2:
+        print("\n'Du hast mir meine Pfeife gebracht! Also gut, hör zu...'")
+        print("Er erzählt dir den Namen des Dorfes.")
+        info_hinzufügen("fischer") 
+
+def marktstände():
+    print("Du schlenderst unauffällig zu den Marktständen herüber.")
+    print("Auf den provisorischen Tischen siehst du die Waren der Händler aufgebahrt.")
+    print("Seidene Stoffe, köstlich anmutende Früchte, Fisch und Dörrfleisch fallen dir zuerst ins Auge.")
+    print("Die Luft ist erfüllt vom Duft der Gewürze, von Kaffee und Tee.")
+    print("Die meisten Händler sind in Verkaufsgespräche verwickelt und ausschweifend am gestikulieren.")
+    print("Neben dir am Stand mit den Stoffen stehen zwei junge Frauen, sie unterhalten sich über ihre Kinder, während sie die Tuche befühlen.")
+    print("Beim Fleisch und Fisch steht ein Mann, der ratlos dreinblickt. Verdrossen stämmt er die Hände in die Seiten.")
+    print("Neben den Gewürzen steht eine alte Frau in viele Tücher gehüllt und wedelt den Geruch der Ware in Richtung ihrer Nase.")
+    print("Beim Teestand siehst du einen dunkel gekleidete Gestalt. Sie lässt ihren Blick über die Ware wandern.")
+
+    while True: 
+        print("\nVielleicht kannst du hier etwas für die Gerüchte das Dorf betreffend herausbekommen. Wen möchtest du gerne ansprechen?")
+        print("1. Die Mütter am Tuchstand.")
+        print("2. Den Mann beim Fleisch und Fischhändler.")
+        print("3. Die alte Frau bei den Gewürzen.")
+        print("4. Die dunkel gekleidete Gestalt am Teestand.")
+        print("5. Zur Dorfübersicht zurückkehren.")
+
+        try:
+            gesprächspartner = int(input("> "))
+            if gesprächspartner == 1:
+                print("Die Frauen blicken irritiert zu dir auf, als du ihr Gespräch unterbrichst, wenden sich dir aber bereitwillig zu.")
+                print("Die Ältere der beiden Frauen beäugt dich kritisch, ehe sie mit dir spricht.")
+                print("'Jeder hier kennt die Gerüchte. Die Menschen sind wütend.'")
+                print("'Als letztes Jahr unser Vieh verhungert ist, hat der König nichts unternommen, um uns zu helfen.'")
+                print("'Meine Kinder haben nachts in ihren Betten vor Hunger geweint. Das werde ich nicht vergessen.'")
+                print("Die zweite Frau nickt zustimmend und wendet das Wort ebenfalls an dich.")
+                print("'Wer sagt uns, dass es dieses Jahr nicht wieder passiert? Unser König kümmert sich einen feuchten Dreck um uns.'")
+                print("'Er ist ein schwacher alter Nichtsnutz geworden.\nEs wird Zeit, dass wir uns um uns selbst kümmen und sei es nur für unsere Kinder.'")
+                print("\nDie Frustration der beiden Mütter ist für dich beinahe greifbar. Aber der Zorn in ihren Augen verheißt nichts Gutes.")
+                print("Schnell bedankest du dich für das Gespräch und wendest dich ab.")
+                info_hinzufügen("frauen")
+            elif gesprächspartner == 2:
+                print("Der Mann seufzt laut und schüttelt den Kopf, als du ihn ansprichst.")
+                print("'Diese verdammten Händler haben die Preise erhöht! Letzte Woche war Fisch noch bezahlbar, jetzt kostet er das Doppelte.'")
+                print("'Ich kann mir das nicht leisten, aber ohne Fleisch und Fisch wird meine Familie krank.'")
+                print("Er runzelt die Stirn und beugt sich verschwörerisch zu dir.")
+                print("'Ich sage dir was: Das ist kein Zufall. Ein paar Männer aus dem Dorf haben mit den Händlern verhandelt.'")
+                print("'Einer dieser Dorfältesten soll hier seine Finger im Spiel haben. Und die Leute werden langsam sauer.'")
+                print("Er schnaubt wütend und dreht sich wieder zu den Waren um, um Preise zu vergleichen.")
+                info_hinzufügen("mann")
+            elif gesprächspartner == 3:
+                print("Die alte Frau nimmt einen tiefen Atemzug, als du sie ansprichst, und blinzelt langsam zu dir hinüber.")
+                print("'Die Luft ist schwer. Etwas liegt in der Dunkelheit, das uns beobachtet.'")
+                print("Sie senkt die Stimme und beugt sich leicht vor.")
+                print("'Vögel fliegen nicht mehr über den Weiler. Die Hunde jaulen nachts, als ob sie den Tod wittern.'")
+                print("'Etwas kommt auf uns zu. Und es wird nichts Gutes bringen.'")
+                print("Sie schüttelt den Kopf und wendet sich wieder den Gewürzen zu, als wäre das Gespräch nie geschehen.")
+                info_hinzufügen("alte_frau")
+            elif gesprächspartner == 4:
+                print("Die dunkel gekleidete Gestalt mustert dich, während sie einen Beutel Tee in der Hand dreht.")
+                print("'Du bist nicht von hier. Und doch stellst du Fragen.'")
+                print("Die Stimme ist ruhig, aber du spürst eine unterschwellige Anspannung.")
+                print("'Hör gut zu: Nicht jeder hier akzeptiert den Zustand, in dem wir leben. Manche haben... Pläne.'")
+                print("Die Gestalt hält inne, bevor sie einen letzten Blick auf dich wirft.")
+                print("'Pass auf, mit wem du redest. Es könnte gefährlich sein, zu viel zu wissen.'")
+                print("Ohne ein weiteres Wort dreht sich die Person um und verschwindet in der Menge.")
+                info_hinzufügen("gestalt")
+            elif gesprächspartner == 5:
+                print("Du verlässt die Marktstände und kehrst zum Dorfplatz zurück.")
+                dorfübersicht()
+            else:
+                print("\nUngültige Eingabe, wähle eine Zahl zwischen 1 und 5.")  # Falls die Zahl außerhalb des Bereichs liegt
+        except ValueError:
+            print("\nUngültige Eingabe, bitte gib eine Zahl ein.")  # Falls der Spieler keine Zahl eingibt
+
+def kammer(): # HIER WEITERMACHEN!!!
+    print("\nDu betrittst deine Kammer. Der Raum ist klein, aber zweckmäßig eingerichtet.")
+    print("Ein einfaches Bett steht an der Wand, daneben ein kleiner Tisch mit einer Öllampe.")
+    print("In der Ecke befindet sich eine alte Truhe, deren Schloss etwas angerostet wirkt.")
+    print("Ein einziges Fenster lässt das fahle Mondlicht in den Raum strömen.")
+
+    while True:
+        print("\nWas möchtest du tun?")
+        print("1. Forschritt speichern.")
+        print("2. Truhe öffnen.")
+        print("3. Kammer untersuchen.")
+        print("4. Tagebuch öffnen.")
+        print("5. Die Kammer verlassen.")
+
+        wahl_kammer = int(input("> "))
+        
+        try:
+            if wahl_kammer == 1:
+                print() # Mechanik für Speichern einbauen.
+            
+            elif wahl_kammer == 2: 
+                print() # Mechanik für die Inventartruhe einbauen.
+           
+            elif wahl_kammer == 3:
+                while True:
+                    print("Was möchtest du untersuchen?")
+                    print("1. Das Fenster.")
+                    print("2. Das Bett.")
+                    print("3. Den Tisch.")
+                    print("4. Untersuchung beenden.")
+
+                    untersuchung_kammer = int(input("> "))
+
+                    try:
+                        if untersuchung_kammer == 1:
+                            print("\nDu trittst ans Fenster und blickst hinaus.")
+                            print("Im Mondlicht erkennst du eine Gestalt, die über den Marktplatz eilt. Wer mag das sein?")
+                            info_hinzufügen("geheimnisvolle_gestalt")
+                            # Wenn diese Info bekommen wurde, gibt es in der Dorfübersicht eine neue Option: "Geheimnisvolle Gestalt verfolgen"
+                       
+                        elif untersuchung_kammer == 2:
+                            print("\nDu untersuchst das Bett. Die Matratze ist dünn, aber sauber.")
+                            print("Unter dem Kopfkissen ertastest du ein Stück Papier.")
+                            print("Du ziehst es hervor und entdeckst eine hastig geschriebene Notiz:")
+                            print("'Nichts ist wie es scheint. Vertraue niemandem.'")
+                            info_hinzufügen("notiz_kammer")
+                        
+                        elif untersuchung_kammer == 3:
+                            print("\nDer Tisch ist aufgeräumt, doch auf der Holzplatte sind einige Kerben zu sehen.")
+                            print("Neben der Öllampe liegt ein altes Messer. Vielleicht könnte es nützlich sein?")
+                            print("Du steckst das Messer ein.")
+                            # Messer muss zum Inventar hinzugefügt werden.
+                        
+                        elif untersuchung_kammer == 4:
+                            print("Du beendest deine Untersuchungen.")
+                            break
+                        
+                        else:
+                            print("\nUngültige Eingabe, wähle eine Zahl zwischen 1 und 5.")  # Falls die Zahl außerhalb des Bereichs liegt
+                    except ValueError:
+                        print("\nUngültige Eingabe, bitte gib eine Zahl ein.")  # Falls der Spieler keine Zahl eingibt
+            
+            elif wahl_kammer == 4:
+                print() # Hier soll man seine bisherigen gesammelten Infos einsehen können.
+           
+            elif wahl_kammer == 5:
+                print("Du verlässt die Kammer.")
+                dorfübersicht()
+                break
+            
+            else:
+                print("\nUngültige Eingabe, wähle eine Zahl zwischen 1 und 5.")  # Falls die Zahl außerhalb des Bereichs liegt
+        except ValueError:
+            print("\nUngültige Eingabe, bitte gib eine Zahl ein.")  # Falls der Spieler keine Zahl eingibt
+
+# Zur Dorfübersicht zurückkehren
+def dorfübersicht():
+    while True:
+        print("\nDu befindest dich auf dem Marktplatz. Von hier aus kannst du in verschiedene Richtungen aufbrechen:")
+        print("1. Zur Schänke")
+        print("2. Zum Schloss")
+        print("3. An den Weiler")
+        print("4. Zu den Marktständen")
+        print("5. Kehre in deine Kammer ein")
+
+        try:
+            ortswahl = int(input("> "))
+            if ortswahl == 1:
+                schänke()
+            elif ortswahl == 2:
+                schloss()
+            elif ortswahl == 3:
+                weiler()
+            elif ortswahl == 4:
+                marktstände()
+            elif ortswahl == 5:
+                kammer()
+            else:
+                print("\nUngültige Eingabe, wähle eine Zahl zwischen 1 und 5.")  # Falls die Zahl außerhalb des Bereichs liegt
+        except ValueError:
+            print("\nUngültige Eingabe, bitte gib eine Zahl ein.")  # Falls der Spieler keine Zahl eingibt
+
+# Hauptcode des 1. Kapitels
+def start_game():
+    print("Willkommen in der Welt von 'Die Feder des Schicksals'!")
+    print("Du bist ein Abenteurer, der auf eine Quest geschickt wird, um ein uraltes Artefakt zu finden.")
+    print("Doch nicht alles ist, wie es scheint. Sei gewarnt, junger Held.\nDeine Entscheidungen werden das Schicksal dieser Welt bestimmen und sie für alle Zeit verändern.")
+    print("Bereite dich auf ein spannendes Abenteuer vor!\n")
+    
+    print("Du betrittst den Raum des mächtigen Valtheris, des königlichen Magiers. Er wartet auf dich und sieht dich ernst an.")
+    print("\nValtheris: 'Ah, der Auserwählte... es ist gut, dass du gekommen bist. Die Schutzzauber des Königreichs schwächen sich.'")
+    print("'Der alte König, nun schwach und hilflos, kann nichts mehr tun. Der Zauber, der das Land schützt, bröckelt, und mit ihm unsere Sicherheit.'")
+    print("'Gerüchte haben sich verbreitet, ein abgelegenes Dorf hat überlebenswichtige Geheimnisse entdeckt, die den Zauber erneuern könnten.'")
+    print("'Das Artefakt, das du finden sollst, könnte der Schlüssel sein, die Magie des Landes zu retten... oder sie für immer zu zerstören.'")
+    
+    print("\nValtheris schaut dich eindringlich an.")
+    print("Valtheris: 'Es gibt nur eine Frage, die du dir stellen musst... bist du bereit, für das Königreich und den Zauber des Landes zu kämpfen?'")
+    
+    # Erste Entscheidung des Spielers
+    antwort = input("1. 'Ja, ich werde dieses Artefakt finden.'\n2. 'Warum sollte ich dem König vertrauen?'\n\nWähle eine Antwort (1/2): ")
+
+    if antwort == "1":
+        print("\nValtheris lächelt weise.")
+        print("'Gut, ich wusste, dass du die richtige Wahl treffen würdest. Du wirst von mir jegliche Unterstützung erhalten, die du brauchst. Komme jederzeit zu mir zurück, wenn du Fragen hast.'")
+        print("'Aber sei gewarnt, es wird viele Gefahren geben, und nicht jeder, dem du begegnest, wird ein Freund sein.'")
+        print("\nDu fühlst dich gestärkt und bereit, deine Reise anzutreten. Doch ein flaues Gefühl bleibt in deinem Magen zurück.")
+        start()
+        # Hier könnte die Reise beginnen oder weitere Informationen gegeben werden
+    else:
+        print("\nValtheris schaut dich mit einer Mischung aus Enttäuschung und Erstaunen an.")
+        print("'Du fragst dich, ob du dem König vertrauen solltest? Die Frage ist berechtigt.'")
+        print("'Aber erinnere dich daran: Der König ist das Herz dieses Landes, und nur der wahre König kann das Land retten.'")
+        print("'Du wirst dich entscheiden müssen, ob du dem König oder etwas anderem folgst.'")
+        # Vielleicht eine Möglichkeit, mit ihm weiter zu sprechen oder das Vertrauen zu gewinnen
+
+def start():
+    print("Du hast dich entschieden, die Mission anzunehmen und den Dorfgeheimnissen nachzugehen.")
+    print("Mache dich bereit und wähle deine Ausrüstung.")
+    waffenkammer()  # Den Spieler in die Waffenkammer schicken
+
+# 2. Kapitel: Das Dorf
+# Während der Nachforschungen im Dorf gerät der Spieler zwischen die Fronten. Das Dorf wird von den Neidern der umliegenden Dörfer angegriffen
+# Der Spieler wird mitten ins Chaos geschmissen: Brennende Scheune, maskierte Angreifer, Dorfbewohner die panisch fliehen.
+# Der Spieler muss sich entscheiden: Will er den Dorfbewohnern helfen? Die Situation nutzen, um sich unbemerkt umzusehen? oder den Angreifern folgen, um zu sehen, was dahinter steckt?
+
+
+# Spiel starten
+start_game()
