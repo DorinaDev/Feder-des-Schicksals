@@ -1,4 +1,5 @@
 import tkinter
+import json
 
 # Kapitel 1: Der Pfad der Mutigen
 
@@ -26,9 +27,10 @@ def info_hinzufügen(key, beschreibung):
         gesammelte_infos[key] = beschreibung
         infos_gesammelt += 1
         print("\nDu hast eine neue Information gesammelt!")
-        print(f"Bisher hast du {infos_gesammelt} Infos gesammelt.")
     else: 
         print("\nDiese Information hattest du bereits.")
+
+    print(f"Bisher hast du {infos_gesammelt} Infos gesammelt.")
 
 # Truhe öffnen + Gegenstand nehmen
 def truhe_öffnen():
@@ -255,10 +257,6 @@ def umhören():
     info_hinzufügen("umhöhren", "Du hast in der Bar den Gästen gelauscht und von einer geheimnisvollen Feder erfahren.") 
     schänke()
 
-# Das Schloss
-def schloss(): # HIER FEHLT NOCH ALLES!!!
-    print("Hier fehlt noch alles.")
-
 # Der Weiler
 def weiler():
     global fortschritt_wirt
@@ -391,7 +389,8 @@ def marktstände():
         except ValueError:
             print("\nUngültige Eingabe, bitte gib eine Zahl ein.")
 
-def kammer(): # In Arbeit
+# Die Kammer
+def kammer():
     print("\nDu betrittst deine Kammer. Der Raum ist klein, aber zweckmäßig eingerichtet.")
     print("Ein einfaches Bett steht an der Wand, daneben ein kleiner Tisch mit einer Öllampe.")
     print("In der Ecke befindet sich eine alte Truhe, deren Schloss etwas angerostet wirkt.")
@@ -409,7 +408,8 @@ def kammer(): # In Arbeit
         
         try:
             if wahl_kammer == 1:
-                print() # Mechanik fürs Speichern einbauen.
+                print("Dein Spielstand wird gespeichert.")
+                spielstand_speichern()
             
             elif wahl_kammer == 2: 
                 truhe_öffnen()
@@ -468,6 +468,10 @@ def kammer(): # In Arbeit
                 print("\nUngültige Eingabe, wähle eine Zahl zwischen 1 und 5.")
         except ValueError:
             print("\nUngültige Eingabe, bitte gib eine Zahl ein.")
+
+# Das Schloss
+def schloss(): # HIER FEHLT NOCH ALLES!!!
+    print("Hier fehlt noch alles.")
 
 # Dreh- und Angelpunkt: Dorfübersicht
 def dorfübersicht():
@@ -544,6 +548,44 @@ def dorfübersicht():
         except ValueError:
             print("\nUngültige Eingabe, bitte gib eine Zahl ein.")
 
+# Spielstand speichern
+def spielstand_speichern():
+    daten = {
+        "inventar": inventar,
+        "gesammelte_infos": gesammelte_infos,
+        "infos_gesammelt": infos_gesammelt,
+        "truhe": truhe,
+        "fortschritt_wirt": fortschritt_wirt,
+        "fortschritt_fischer": fortschritt_fischer
+    }
+
+    with open("spielstand.json", "w") as datei:
+        json.dump(daten, datei, indent=4)
+
+    print("\nDein Spielstand wurde erfolgreich gespeichert!")
+
+# Spielstand laden
+def spielstand_laden():
+    global gesammelte_infos, infos_gesammelt, fortschritt_wirt, fortschritt_fischer, truhe, inventar, aktueller_ort
+    
+    try:
+        with open("spielstand.json", "r") as datei:
+            daten = json.load(datei)
+
+        gesammelte_infos = daten.get("gesammelte_infos", {})
+        infos_gesammelt = daten.get("infos_gesammelt", 0)
+        fortschritt_wirt = daten.get("fortschritt_wirt", 0)
+        fortschritt_fischer = daten.get("fortschritt_fischer", 0)
+        truhe = daten.get("truhe", {})
+        inventar = daten.get("inventar", {})
+
+        print("\nDein Spiel wurde geladen. Du befindest dich in deiner Kammer.")
+
+        kammer()
+
+    except FileNotFoundError:
+        print("\nKein gespeicherter Spielstand gefunden.")
+
 # Hauptcode des 1. Kapitels
 def start_game():
     print("Willkommen in der Welt von 'Die Feder des Schicksals'!")
@@ -560,7 +602,6 @@ def start_game():
     print("\nValtheris schaut dich eindringlich an.")
     print("Valtheris: 'Es gibt nur eine Frage, die du dir stellen musst... bist du bereit, für das Königreich und den Zauber des Landes zu kämpfen?'")
     
-    # Erste Entscheidung des Spielers
     antwort = input("1. 'Ja, ich werde dieses Artefakt finden.'\n2. 'Warum sollte ich dem König vertrauen?'\n\nWähle eine Antwort (1/2): ")
 
     if antwort == "1":
@@ -581,11 +622,40 @@ def start():
     print("Mache dich bereit und wähle deine Ausrüstung.")
     waffenkammer()
 
+# Hauptmenu
+def hauptmenu():
+    print("Willkommen zu deinem neuen Abenteuer 'Die Feder des Schicksals'!")
+    print("Was möchtest du tun?")
+    print("1. Das Abenteuer beginnen.")
+    print("2. Meinen Spielstand laden.")
+    print("3. Beenden.")
+
+    while True:
+
+        try:
+
+            wahl_hauptmenu = int(input("> "))
+
+            if wahl_hauptmenu == 1:
+                start_game()
+                return
+            elif wahl_hauptmenu == 2:
+                spielstand_laden()
+                return
+            elif wahl_hauptmenu == 3:
+                print("Das Spiel wird nun beendet. Bis bald!")
+                break
+            else: 
+                print("Bitte gib eine Zahl zwischen 1 und 3 ein.")
+        
+        except ValueError: 
+            print("Ungültige Eingabe. Bitte gib eine Zahl ein.")
+
+# Spiel starten
+if __name__ == "__main__":
+    hauptmenu()
+
 # 2. Kapitel: Das Dorf
 # Während der Nachforschungen im Dorf gerät der Spieler zwischen die Fronten. Das Dorf wird von den Neidern der umliegenden Dörfer angegriffen
 # Der Spieler wird mitten ins Chaos geschmissen: Brennende Scheune, maskierte Angreifer, Dorfbewohner die panisch fliehen.
 # Der Spieler muss sich entscheiden: Will er den Dorfbewohnern helfen? Die Situation nutzen, um sich unbemerkt umzusehen? oder den Angreifern folgen, um zu sehen, was dahinter steckt?
-
-
-# Spiel starten
-start_game()
